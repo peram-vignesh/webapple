@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { highlightsSlides } from '../constants';
 import gsap from 'gsap';
+import { ScrollTrigger } from "gsap/all";
+gsap.registerPlugin(ScrollTrigger);
 import { pauseImg, playImg, replayImg } from '../utils';
 import { useGSAP } from '@gsap/react';
 
@@ -21,7 +23,12 @@ const Videocarousel = () => {
     const { isEnd, isLastVideo, startPlay, videoId, isPlaying } = video;
 
     useGSAP(() => {
-        gsap.to('#video', {
+            gsap.to('#slider',{
+                transform: `translateX(${-100 * videoId}%)`,
+                duration: 2,
+                ease: 'power2.inOut'
+            })
+            gsap.to('#video', {
             scrollTrigger: {
                 trigger: '#video',
                 toggleActions: 'restart none none none',
@@ -62,7 +69,7 @@ const Videocarousel = () => {
                         currentProgress=progress;
 
                         gsap.to(videoDivRef.current[videoId],{
-                            width:window.innerWidth<760? '10vw'
+                            width: window.innerWidth<760? '10vw'
                             : window.innerWidth<1200 ? '10vw'
                             : '4vw'
                         })
@@ -90,7 +97,7 @@ const Videocarousel = () => {
                 anim.restart();
             }
             const animUpdate = () => {
-                anim.progress(videoRef.current[videoId] / 
+                anim.progress(videoRef.current[videoId].currentTime / 
                     highlightsSlides[videoId].videoDuration)
             }
 
@@ -119,6 +126,9 @@ const Videocarousel = () => {
             case 'play':
                 setvideo((prev) => ({ ...prev, isPlaying: !prev.isPlaying }));
                 break;
+                case 'pause':
+                    setvideo((prev) => ({ ...prev, isPlaying: !prev.isPlaying }));
+                    break;
 
             default:
                 return video;
@@ -137,7 +147,15 @@ const Videocarousel = () => {
                                     playsInline={true}
                                     preload='auto'
                                     muted
+                                    className={`${
+                                        list.id === 2 && 'translate-x-44'
+                                    } pointer-events-none`}
                                     ref={(el) => (videoRef.current[i] = el)}
+                                    onEnded={() => {
+                                        i !== 3
+                                        ? handleProcess('video-end',i)
+                                        : handleProcess('video-last')
+                                    }}
                                     onPlay={() => {
                                         setvideo((prevVideo) => ({
                                             ...prevVideo, isPlaying: true
