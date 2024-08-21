@@ -97,8 +97,17 @@ const Videocarousel = () => {
                 anim.restart();
             }
             const animUpdate = () => {
-                anim.progress(videoRef.current[videoId].currentTime / 
-                    highlightsSlides[videoId].videoDuration)
+                const videoElement = videoRef.current?.[videoId];
+                
+                if (!videoElement) {
+                    return; // Exit if the video element is not available
+                }
+            
+                const videoDuration = highlightsSlides[videoId]?.videoDuration;
+                
+                if (videoDuration) {
+                    anim.progress(videoElement.currentTime / videoDuration);
+                }
             }
 
         if(isPlaying){

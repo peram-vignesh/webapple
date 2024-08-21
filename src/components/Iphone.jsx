@@ -6,11 +6,34 @@ Source: https://sketchfab.com/3d-models/apple-iphone-15-pro-max-black-df17520841
 Title: Apple iPhone 15 Pro Max Black
 */
 
-import React, { useRef } from 'react'
-import { useGLTF } from '@react-three/drei'
+import React, { useEffect, useRef } from 'react';
+import { useGLTF, useTexture } from '@react-three/drei';
+import * as THREE from 'three';
+import { Color} from 'three';
+
 
 function Model(props) {
   const { nodes, materials } = useGLTF('public/models/scene.glb')
+
+  const texture = useTexture(props.item.img);
+
+  useEffect(() => {
+    const nonChangeableMaterials = [
+      "zFdeDaGNRwzccye",
+      "ujsvqBWRMnqdwPx",
+      "hUlRcbieVuIiOXG",
+      "jlzuBkUzuJqgiAK",
+      "xNrofRCqOXXHVZt",
+    ];
+  
+    Object.entries(materials).forEach(([key, material]) => {
+      if (!nonChangeableMaterials.includes(key)) {
+        material.color = new THREE.Color(props.item.color[0]);
+      }
+      material.needsUpdate = true;
+    });
+  }, [materials, props.item.color]);
+
   return (
     <group {...props} dispose={null}>
       <mesh
