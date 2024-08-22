@@ -7,7 +7,7 @@ import IPhone from './Iphone';
 import { PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
 import { OrbitControls } from '@react-three/drei';
-const ModelView = ({index,groupRef,gsapType,controlRef,setRotationSize,size,item}) => {
+const ModelView = ({index,groupRef,gsapType,controlRef,setRotationState,size,item}) => {
   return (
     <View
     index={index}
